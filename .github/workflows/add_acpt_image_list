@@ -1,0 +1,34 @@
+name: Update File
+
+on:
+  push:
+    paths:
+      - '.azure_pipelines/pipeline_config/ptca_image_list.md'
+
+jobs:
+  copy-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+
+      - name: Checkout destination repository
+        uses: actions/checkout@v2
+        with:
+          repository: destination-org/destination-repo
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: destination-repo
+
+      - name: Copy file
+        run: |
+          cp .azure_pipelines/pipeline_config/ptca_image_list.md destination-repo/path/to/file/in/destination/repo
+
+      - name: Push changes
+        run: |
+          cd destination-repo
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update ptca_image_list.md"
+          git push
