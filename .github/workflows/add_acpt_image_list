@@ -1,10 +1,12 @@
-name: Update File
+name: Update ACPT Image File
 
+# Copy image list file from ACPT ADO
 on:
   push:
     paths:
       - '.azure_pipelines/pipeline_config/ptca_image_list.md'
-
+  schedule:
+  - cron: '0 0 1 * *'
 jobs:
   copy-file:
     runs-on: ubuntu-latest
@@ -22,7 +24,8 @@ jobs:
 
       - name: Copy file
         run: |
-          cp .azure_pipelines/pipeline_config/ptca_image_list.md destination-repo/path/to/file/in/destination/repo
+          git clone https://aiinfra.visualstudio.com/PyTorch/_git/ptebic?path=%2F&version=GBmain&_a=contents
+          cp .azure_pipelines/pipeline_config/ptca_image_list.md onnexruntime/docs/ecosystem/ptca_image_list.md
 
       - name: Push changes
         run: |
